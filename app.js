@@ -60,9 +60,41 @@ if ('development' == app.get('env')) {
 app.get('/', routes.index);
 
 app.clientes = 0;
+
+// http://www.magicspoiler.com/gatecrash-spoiler/
+app.deck = [
+	 'http://cdn.magicspoiler.com/wp-content/uploads/2013/01/Aerial-Maneuver-Gatecrash-Spoiler-216x302.jpg'
+	,'http://cdn.magicspoiler.com/wp-content/uploads/2013/01/Guildscorn-Ward-Gatecrash-Spoiler-216x302.jpg'
+	,'http://cdn.magicspoiler.com/wp-content/uploads/2013/01/Ogre-Slumlord-Gatecrash-Spoiler-216x302.jpg'
+	,'http://cdn.magicspoiler.com/wp-content/uploads/2013/01/Slate-Street-Ruffian-Gatecrash-Spoiler-216x302.jpg'
+	,'http://cdn.magicspoiler.com/wp-content/uploads/2013/01/Firefist-Striker-Gatecrash-Spoiler-216x302.jpg'
+];
 sio.sockets.on('connection', function(socket) {
+	console.log(app.deck);
 	socket.on('disconnect', function() {
 		console.log('Se ha ido un cliente, ya somos', --app.clientes);
+	});
+	socket.set('deck', [].concat(app.deck));
+	
+	socket.on('view deck', function() {
+		socket.get('deck', function(err, mazo) {
+			socket.emit('view deck', mazo);
+		}); 
+	});
+	
+	socket.on('draw', function() {
+		console.log('robamos carta');
+		socket.get('deck', function(err, mazo) {
+			var carta;
+			if (mazo.length) {
+				carta = mazo.splice(0, 1)[0];
+				socket.set('deck', mazo);
+			} else {
+				carta = null;
+			}
+			console.log(carta);
+			socket.emit('draw', carta);
+		});
 	});
 	console.log('Se ha conectado un cliente, ya somos', ++app.clientes);
 });

@@ -2,16 +2,55 @@ extends layout
 
 block head
 	script
-		var socket = io.connect('http://localhost');
-		socket.on('connect', function() {
-			$.jGrowl('<p>Conexión realizada con éxito');
+		// Onload
+		$(function(){
+			socket = io.connect('http://localhost');
+			socket.once('connect', function() {
+				$.jGrowl('<p>Conexión realizada con éxito');
+			});
+			socket.on('draw', function(data) {
+				if (data) {
+					$('#hand').append($('<img />').attr('src', data));
+				} else {
+					// no hay más cartas
+					$('#hand').append($('<img />').attr('src', 'http://www.wizards.com/magic/images/mtgcom/fcpics/making/mr224_back.jpg'));
+					socket.removeAllListeners('draw');
+				}
+			});
+			socket.on('view deck', function(data) {
+				var $div = $("#deck");
+				$div.empty();
+				if (data.length) {
+					$(data).each(function() {
+						$div.append($('<img />').attr('src', this));
+					});
+				} else {
+					$div.append($('<img />').attr('src', 'http://www.wizards.com/magic/images/mtgcom/fcpics/making/mr224_back.jpg'));
+				}
+			});
 		});
-		$(function(){});
-		socket.on('news', function (data) {
-			console.log(data);
-			socket.emit('my other event', { my: 'data' });
-		});
+		var socket = null;
+
+		function accion(nombre) {
+			socket.emit(nombre);
+		}
+	
+	style(type="text/css")
+		#hand img,
+		#deck img {
+			width: 20%;
+		}
 
 block content
 	h1= title
 	p Welcome to #{title}
+	
+	ul
+		li
+			a(onclick="accion('draw');") Robar
+		li
+			a(onclick="accion('view deck');") Ver el mazo
+	
+	div#hand(style="border:1px solid blue;")
+	
+	div#deck(style="border: 2px dashed gray;")
