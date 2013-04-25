@@ -10,6 +10,9 @@
     "npm": "1.2.18"
   },
   "dependencies": {
+    "node-redis": "*",
+    "cf-autoconfig": "*",
+    "socket.io": "*",
     "express": "3.2.0",
     "jade": "0.29.0",
     "less": "1.3.3",
