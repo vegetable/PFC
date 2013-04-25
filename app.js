@@ -62,6 +62,7 @@ app.get('/', routes.index);
 app.clientes = 0;
 
 // http://www.magicspoiler.com/gatecrash-spoiler/
+// ahora mismo todo el mundo tiene un mazo común
 app.deck = [
 	 'http://cdn.magicspoiler.com/wp-content/uploads/2013/01/Aerial-Maneuver-Gatecrash-Spoiler-216x302.jpg'
 	,'http://cdn.magicspoiler.com/wp-content/uploads/2013/01/Guildscorn-Ward-Gatecrash-Spoiler-216x302.jpg'

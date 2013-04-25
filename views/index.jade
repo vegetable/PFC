@@ -1,39 +1,7 @@
 extends layout
 
 block head
-	script
-		// Onload
-		$(function(){
-			socket = io.connect(location.host);
-			socket.once('connect', function() {
-				$.jGrowl('<p>Conexión realizada con éxito');
-			});
-			socket.on('draw', function(data) {
-				if (data) {
-					$('#hand').append($('<img />').attr('src', data));
-				} else {
-					// no hay más cartas
-					$('#hand').append($('<img />').attr('src', 'http://www.wizards.com/magic/images/mtgcom/fcpics/making/mr224_back.jpg'));
-					socket.removeAllListeners('draw');
-				}
-			});
-			socket.on('view deck', function(data) {
-				var $div = $("#deck");
-				$div.empty();
-				if (data.length) {
-					$(data).each(function() {
-						$div.append($('<img />').attr('src', this));
-					});
-				} else {
-					$div.append($('<img />').attr('src', 'http://www.wizards.com/magic/images/mtgcom/fcpics/making/mr224_back.jpg'));
-				}
-			});
-		});
-		var socket = null;
-
-		function accion(nombre) {
-			socket.emit(nombre);
-		}
+	script(src="/javascripts/index.js", type="text/javascript")
 	
 	style(type="text/css")
 		#hand img,
@@ -45,12 +13,16 @@ block content
 	h1= title
 	p Welcome to #{title}
 	
-	ul
-		li
-			a(onclick="accion('draw');") Robar
-		li
-			a(onclick="accion('view deck');") Ver el mazo
+	fieldset
+		legend Acciones
+		ul
+			li
+				a(onclick="accion('draw');") Robar
+			li
+				a(onclick="accion('view deck');") Ver el mazo
 	
+	h2 Mano
 	div#hand(style="border:1px solid blue;")
 	
+	h2 Mazo
 	div#deck(style="border: 2px dashed gray;")
