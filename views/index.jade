@@ -4,7 +4,7 @@ block head
 	script
 		// Onload
 		$(function(){
-			socket = io.connect('http://localhost');
+			socket = io.connect(location.host);
 			socket.once('connect', function() {
 				$.jGrowl('<p>Conexión realizada con éxito');
 			});
